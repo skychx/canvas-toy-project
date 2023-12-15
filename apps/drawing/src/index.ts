@@ -1,4 +1,4 @@
-// import "./icons";
+import "./main";
 
 var iconCanvas = document.getElementById("iconCanvas"),
   drawingCanvas = document.getElementById("drawingCanvas"),
@@ -35,7 +35,6 @@ var iconCanvas = document.getElementById("iconCanvas"),
   curveEnd = {},
   doFill = false,
   selectedRect = null,
-  selectedFunction,
   editingText = false,
   currentText,
   CONTROL_POINT_RADIUS = 20,
@@ -316,18 +315,18 @@ function getIconFunction(rect, loc) {
   if (rect.y === ICON_RECTANGLES[LINE_ICON].y) action = "line";
   else if (rect.y === ICON_RECTANGLES[RECTANGLE_ICON].y) action = "rectangle";
   else if (rect.y === ICON_RECTANGLES[CIRCLE_ICON].y) action = "circle";
-  else if (rect.y === ICON_RECTANGLES[OPEN_PATH_ICON].y) action = "path";
+  else if (rect.y === ICON_RECTANGLES[OPEN_PATH_ICON].y) action = "openPath";
   else if (rect.y === ICON_RECTANGLES[CLOSED_PATH_ICON].y)
-    action = "pathClosed";
+    action = "closedPath";
   else if (rect.y === ICON_RECTANGLES[CURVE_ICON].y) action = "curve";
   else if (rect.y === ICON_RECTANGLES[TEXT_ICON].y) action = "text";
   else if (rect.y === ICON_RECTANGLES[SLINKY_ICON].y) action = "slinky";
-  else if (rect.y === ICON_RECTANGLES[ERASER_ICON].y) action = "erase";
+  else if (rect.y === ICON_RECTANGLES[ERASER_ICON].y) action = "eraser";
 
   if (
     action === "rectangle" ||
     action === "circle" ||
-    action === "pathClosed" ||
+    action === "closedPath" ||
     action === "text" ||
     action === "curve" ||
     action === "slinky"
@@ -420,11 +419,11 @@ function drawRubberband(loc) {
   drawingContext.strokeStyle = RUBBERBAND_STROKE_STYLE;
   drawingContext.lineWidth = RUBBERBAND_LINE_WIDTH;
 
-  if (selectedFunction === "rectangle") {
+  if (window.selectedFunction === "rectangle") {
     drawRubberbandRectangle();
-  } else if (selectedFunction === "line" || selectedFunction === "curve") {
+  } else if (window.selectedFunction === "line" || window.selectedFunction === "curve") {
     drawRubberbandLine(loc);
-  } else if (selectedFunction === "circle") {
+  } else if (window.selectedFunction === "circle") {
     drawRubberbandCircle(loc);
   }
 
@@ -676,7 +675,6 @@ function mouseDownOrTouchStartInControlCanvas(loc) {
   if (editingText) {
     editingText = false;
     eraseTextCursor();
-    hideKeyboard();
   } else if (editingCurve) {
     editingCurve = false;
     restoreDrawingSurface();
@@ -688,9 +686,9 @@ function mouseDownOrTouchStartInControlCanvas(loc) {
     iconContext.rect(rect.x, rect.y, rect.w, rect.h);
     if (iconContext.isPointInPath(loc.x, loc.y)) {
       selectIcon(rect, loc);
-      selectedFunction = getIconFunction(rect, loc);
+      window.selectedFunction = getIconFunction(rect, loc);
 
-      if (selectedFunction === "text") {
+      if (window.selectedFunction === "text") {
         drawingCanvas.style.cursor = "text";
       } else {
         drawingCanvas.style.cursor = "crosshair";
@@ -775,7 +773,6 @@ function startDrawingText() {
   editingText = true;
   currentText = "";
   drawTextCursor();
-  showKeyboard();
 }
 
 function finishDrawingText() {
@@ -802,10 +799,10 @@ function mouseDownOrTouchStartInDrawingCanvas(loc) {
     mousedown.x = loc.x;
     mousedown.y = loc.y;
 
-    if (selectedFunction === "path" || selectedFunction === "pathClosed") {
+    if (window.selectedFunction === "openPath" || window.selectedFunction === "closedPath") {
       drawingContext.beginPath();
       drawingContext.moveTo(loc.x, loc.y);
-    } else if (selectedFunction === "text") {
+    } else if (window.selectedFunction === "text") {
       startDrawingText();
     } else {
       editingText = false;
@@ -837,14 +834,14 @@ function mouseMoveOrTouchMoveInDrawingCanvas(loc) {
 
     drawingContext.restore();
   } else if (dragging) {
-    if (selectedFunction === "erase") {
+    if (window.selectedFunction === "eraser") {
       eraseLast();
       drawEraser(loc);
-    } else if (selectedFunction === "slinky") {
+    } else if (window.selectedFunction === "slinky") {
       drawSlinky(loc);
     } else if (
-      selectedFunction === "path" ||
-      selectedFunction === "pathClosed"
+      window.selectedFunction === "openPath" ||
+      window.selectedFunction === "closedPath"
     ) {
       drawingContext.lineTo(loc.x, loc.y);
       drawingContext.stroke();
@@ -864,9 +861,9 @@ function mouseMoveOrTouchMoveInDrawingCanvas(loc) {
 
   if (dragging || draggingControlPoint) {
     if (
-      selectedFunction === "line" ||
-      selectedFunction === "rectangle" ||
-      selectedFunction === "circle"
+      window.selectedFunction === "line" ||
+      window.selectedFunction === "rectangle" ||
+      window.selectedFunction === "circle"
     ) {
       drawGuidewires(loc.x, loc.y);
     }
@@ -877,7 +874,7 @@ function endPath(loc) {
   drawingContext.lineTo(loc.x, loc.y);
   drawingContext.stroke();
 
-  if (selectedFunction === "pathClosed") {
+  if (window.selectedFunction === "closedPath") {
     drawingContext.closePath();
 
     if (doFill) {
@@ -888,7 +885,7 @@ function endPath(loc) {
 }
 
 function mouseUpOrTouchEndInDrawingCanvas(loc) {
-  if (selectedFunction !== "erase" && selectedFunction !== "slinky") {
+  if (window.selectedFunction !== "eraser" && window.selectedFunction !== "slinky") {
     restoreDrawingSurface();
   }
 
@@ -897,18 +894,18 @@ function mouseUpOrTouchEndInDrawingCanvas(loc) {
     finishDrawingCurve();
     draggingControlPoint = false;
   } else if (dragging) {
-    if (selectedFunction === "erase") {
+    if (window.selectedFunction === "eraser") {
       eraseLast();
     } else if (
-      selectedFunction === "path" ||
-      selectedFunction === "pathClosed"
+      window.selectedFunction === "openPath" ||
+      window.selectedFunction === "closedPath"
     ) {
       endPath(loc);
     } else {
-      if (selectedFunction === "line") finishDrawingLine(loc);
-      else if (selectedFunction === "rectangle") finishDrawingRectangle();
-      else if (selectedFunction === "circle") finishDrawingCircle(loc);
-      else if (selectedFunction === "curve") startEditingCurve(loc);
+      if (window.selectedFunction === "line") finishDrawingLine(loc);
+      else if (window.selectedFunction === "rectangle") finishDrawingRectangle();
+      else if (window.selectedFunction === "circle") finishDrawingCircle(loc);
+      else if (window.selectedFunction === "curve") startEditingCurve(loc);
     }
   }
   dragging = false;
@@ -916,23 +913,23 @@ function mouseUpOrTouchEndInDrawingCanvas(loc) {
 
 // Control canvas event handlers.................................
 
-iconCanvas.onmousedown = function (e) {
-  var x = e.x || e.clientX,
-    y = e.y || e.clientY,
-    loc = windowToCanvas(iconCanvas, x, y);
+// iconCanvas.onmousedown = function (e) {
+//   var x = e.x || e.clientX,
+//     y = e.y || e.clientY,
+//     loc = windowToCanvas(iconCanvas, x, y);
 
-  e.preventDefault();
-  mouseDownOrTouchStartInControlCanvas(loc);
-};
+//   e.preventDefault();
+//   mouseDownOrTouchStartInControlCanvas(loc);
+// };
 
-iconCanvas.addEventListener("touchstart", function (e) {
-  if (e.touches.length === 1) {
-    e.preventDefault();
-    mouseDownOrTouchStartInControlCanvas(
-      windowToCanvas(iconCanvas, e.touches[0].clientX, e.touches[0].clientY)
-    );
-  }
-});
+// iconCanvas.addEventListener("touchstart", function (e) {
+//   if (e.touches.length === 1) {
+//     e.preventDefault();
+//     mouseDownOrTouchStartInControlCanvas(
+//       windowToCanvas(iconCanvas, e.touches[0].clientX, e.touches[0].clientY)
+//     );
+//   }
+// });
 
 // Drawing canvas event handlers.................................
 
@@ -1061,15 +1058,6 @@ function drawBackground() {
   drawGrid(backgroundContext, GRID_LINE_COLOR, 10, 10);
 }
 
-// Initialization................................................
-
-iconContext.strokeStyle = ICON_STROKE_STYLE;
-iconContext.fillStyle = ICON_FILL_STYLE;
-
-iconContext.font = "48px Palatino";
-iconContext.textAlign = "center";
-iconContext.textBaseline = "middle";
-
 drawingContext.font = "48px Palatino";
 drawingContext.textBaseline = "bottom";
 
@@ -1079,7 +1067,7 @@ drawingContext.lineWidth = lineWidthSelect.value;
 
 drawGrid(drawingContext, GRID_LINE_COLOR, 10, 10);
 selectedRect = ICON_RECTANGLES[SLINKY_ICON];
-selectedFunction = "slinky";
+window.selectedFunction = "slinky";
 
 // This event listener prevents touch devices from
 // scrolling the visible viewport.
@@ -1092,5 +1080,5 @@ document.body.addEventListener(
   false
 );
 
-drawIcons();
+// drawIcons();
 drawBackground();
