@@ -1,4 +1,4 @@
-import { drawToolButtons, onToolsPress } from "./toolbar";
+import { initToolsBar, onToolsPress } from "./toolbar";
 
 import { IIconRect } from "./types";
 
@@ -33,7 +33,7 @@ toolButtonsCanvas.addEventListener('mousedown', (e) => {
  * init project
  */
 function initDrawing() {
-  drawToolButtons(toolButtonsCanvas);
+  initToolsBar(toolButtonsCanvas);
 }
 
 initDrawing();

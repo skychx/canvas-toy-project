@@ -3,6 +3,19 @@ import { setIconShadow, setSelectedIconShadow, drawIcon } from "./icons";
 
 import type { IIconRect } from "../types";
 
+export function initToolsBar(ele: HTMLCanvasElement) {
+  const ctx = ele.getContext("2d")!;
+
+  ctx.font = "48px Palatino";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  ctx.strokeStyle = ICON_STYLE.ICON_BORDER_COLOR;
+  ctx.fillStyle = ICON_STYLE.ICON_FILL_COLOR;
+
+  drawToolButtons(ele);
+}
+
 export function drawToolButtons(
   ele: HTMLCanvasElement,
   selectRect: IIconRect = ICON_RECT_LIST[7] // slinky

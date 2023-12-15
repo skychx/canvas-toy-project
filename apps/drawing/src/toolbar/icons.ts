@@ -21,9 +21,6 @@ export function setSelectedIconShadow(ctx: CanvasRenderingContext2D) {
 export function drawIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
   ctx.save();
 
-  ctx.strokeStyle = ICON_STYLE.ICON_BORDER_COLOR;
-  ctx.fillStyle = ICON_STYLE.ICON_FILL_COLOR;
-
   if (rect.n === "line") {
     drawLineIcon(ctx, rect);
   } else if (rect.n === "rectangle") {
@@ -122,10 +119,6 @@ function drawCurveIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
 
 function drawTextIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
   const text = "T";
-
-  ctx.font = "48px Palatino";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
 
   ctx.fillText(text, rect.x + rect.w / 2, rect.y + rect.h / 2 + 5);
   ctx.strokeText(text, rect.x + rect.w / 2, rect.y + rect.h / 2 + 5);
