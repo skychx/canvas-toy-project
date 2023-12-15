@@ -44,6 +44,16 @@ export function drawIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
   ctx.restore();
 }
 
+// 点击 button 右下角，让闭合的图像上色
+function fillButtonLowerRight(ctx: CanvasRenderingContext2D, rect: IIconRect) {
+  ctx.beginPath();
+  ctx.moveTo(rect.x + rect.w, rect.y);
+  ctx.lineTo(rect.x + rect.w, rect.y + rect.h);
+  ctx.lineTo(rect.x, rect.y + rect.h);
+  ctx.closePath();
+  ctx.fill();
+}
+
 function drawLineIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
   ctx.beginPath();
   ctx.moveTo(rect.x + 5, rect.y + 5);
@@ -52,10 +62,14 @@ function drawLineIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
 }
 
 function drawRectIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
+  fillButtonLowerRight(ctx, rect);
+
   ctx.strokeRect(rect.x + 5, rect.y + 5, rect.w - 10, rect.h - 10);
 }
 
 function drawCircleIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
+  fillButtonLowerRight(ctx, rect);
+
   ctx.beginPath();
   ctx.arc(rect.x + rect.w / 2, rect.y + rect.h / 2, 20, 0, Math.PI * 2, false);
   ctx.stroke();
@@ -93,6 +107,8 @@ function drawOpenPathIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
 }
 
 function drawClosedPathIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
+  fillButtonLowerRight(ctx, rect);
+
   ctx.beginPath();
 
   drawOpenPathIconLines(ctx, rect);
@@ -118,6 +134,8 @@ function drawCurveIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
 }
 
 function drawTextIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
+  fillButtonLowerRight(ctx, rect);
+
   const text = "T";
 
   ctx.fillText(text, rect.x + rect.w / 2, rect.y + rect.h / 2 + 5);
@@ -125,6 +143,8 @@ function drawTextIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
 }
 
 function drawSlinkyIcon(ctx: CanvasRenderingContext2D, rect: IIconRect) {
+  fillButtonLowerRight(ctx, rect);
+
   ctx.save();
 
   for (let i = -2; i < rect.w / 3 + 2; i += 1.5) {

@@ -31,7 +31,6 @@ var drawingCanvas = document.getElementById("drawingCanvas"),
   draggingControlPoint = false,
   curveStart = {},
   curveEnd = {},
-  doFill = false,
   editingText = false,
   currentText,
   CONTROL_POINT_RADIUS = 20,
@@ -48,6 +47,9 @@ var drawingCanvas = document.getElementById("drawingCanvas"),
   ERASER_SHADOW_OFFSET = -5,
   ERASER_SHADOW_BLUR = 20,
   ERASER_RADIUS = 40;
+
+window.doFill = false;
+window.selectedFunction = "slinky";
 
 // Grid..........................................................
 
@@ -749,7 +751,6 @@ drawingContext.fillStyle = fillStyleSelect.value;
 drawingContext.lineWidth = lineWidthSelect.value;
 
 drawGrid(drawingContext, GRID_LINE_COLOR, 10, 10);
-window.selectedFunction = "slinky";
 
 // This event listener prevents touch devices from
 // scrolling the visible viewport.

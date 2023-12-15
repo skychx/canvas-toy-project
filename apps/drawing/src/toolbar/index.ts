@@ -16,7 +16,37 @@ export function initToolsBar(ele: HTMLCanvasElement) {
   drawToolButtons(ele);
 }
 
-export function drawToolButtons(
+export function onToolsPress(
+  ele: HTMLCanvasElement,
+  x: number,
+  y: number,
+  onButtonPressCb: (selectRect: IIconRect) => void
+) {
+  const ctx = ele.getContext("2d")!;
+
+  ICON_RECT_LIST.forEach((rect) => {
+    ctx.beginPath();
+    // isPointInPath 使用前，需要先用 ctx.rect 画一个区域出来
+    ctx.rect(rect.x, rect.y, rect.w, rect.h);
+    if (ctx.isPointInPath(x, y)) {
+      drawToolButtons(ele, rect);
+      onButtonPressCb(rect);
+
+      if (
+        rect.n === "rectangle" ||
+        rect.n === 'circle' ||
+        rect.n === 'closedPath' ||
+        rect.n === 'text' ||
+        rect.n === 'slinky'
+      ) {
+        // @ts-ignore
+        window.doFill = isPointInButtonLowerRight(ctx, rect, x, y);
+      }
+    }
+  });
+}
+
+function drawToolButtons(
   ele: HTMLCanvasElement,
   selectRect: IIconRect = ICON_RECT_LIST[7] // slinky
 ) {
@@ -43,21 +73,16 @@ export function drawToolButtons(
   });
 }
 
-export function onToolsPress(
-  ele: HTMLCanvasElement,
+function isPointInButtonLowerRight(
+  ctx: CanvasRenderingContext2D,
+  rect: IIconRect,
   x: number,
-  y: number,
-  onButtonPressCb: (selectRect: IIconRect) => void
+  y: number
 ) {
-  const ctx = ele.getContext("2d")!;
+  ctx.beginPath();
+  ctx.moveTo(rect.x + rect.w, rect.y);
+  ctx.lineTo(rect.x + rect.w, rect.y + rect.h);
+  ctx.lineTo(rect.x, rect.y + rect.h);
 
-  ICON_RECT_LIST.forEach((rect) => {
-    ctx.beginPath();
-    // isPointInPath 使用前，需要先用 ctx.rect 画一个区域出来
-    ctx.rect(rect.x, rect.y, rect.w, rect.h);
-    if (ctx.isPointInPath(x, y)) {
-      drawToolButtons(ele, rect);
-      onButtonPressCb(rect);
-    }
-  });
+  return ctx.isPointInPath(x, y);
 }
