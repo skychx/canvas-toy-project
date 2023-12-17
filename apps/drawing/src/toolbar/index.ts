@@ -1,10 +1,14 @@
-import { ICON_RECT_LIST, ICON_STYLE } from "./const";
+import { TOOLS_BAR, ICON_RECT_LIST, ICON_STYLE } from "./const";
 import { setIconShadow, setSelectedIconShadow, drawIcon } from "./icons";
+
+import { supportRetinaDisplay } from "../common";
 
 import type { IIconRect } from "../types";
 
 export function initToolsBar(ele: HTMLCanvasElement) {
   const ctx = ele.getContext("2d")!;
+
+  supportRetinaDisplay(ele, TOOLS_BAR.WIDTH, TOOLS_BAR.HEIGHT);
 
   ctx.font = "48px Palatino";
   ctx.textAlign = "center";

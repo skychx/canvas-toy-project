@@ -1,8 +1,9 @@
+import { DPR } from "./common";
 import { initToolsBar, onToolsPress } from "./toolbar";
 
-import { IIconRect } from "./types";
+import type { IIconRect } from "./types";
 
-const toolButtonsCanvas = document.getElementById(
+const toolsBarCanvas = document.getElementById(
   "iconCanvas"
 ) as HTMLCanvasElement;
 const drawingCanvas2 = document.getElementById(
@@ -16,24 +17,29 @@ function onToolButtonPress(rect: IIconRect) {
   // @ts-ignore
   window.selectedFunction = rect.n;
 
-  if (rect.n === 'text') {
+  if (rect.n === "text") {
     drawingCanvas2.style.cursor = "text";
   } else {
     drawingCanvas2.style.cursor = "crosshair";
   }
 }
 
-toolButtonsCanvas.addEventListener('mousedown', (e) => {
+toolsBarCanvas.addEventListener("mousedown", (e) => {
   e.preventDefault();
 
-  onToolsPress(toolButtonsCanvas, e.offsetX, e.offsetY, onToolButtonPress);
-})
+  onToolsPress(
+    toolsBarCanvas,
+    e.offsetX * DPR,
+    e.offsetY * DPR,
+    onToolButtonPress
+  );
+});
 
 /**
  * init project
  */
 function initDrawing() {
-  initToolsBar(toolButtonsCanvas);
+  initToolsBar(toolsBarCanvas);
 }
 
 initDrawing();

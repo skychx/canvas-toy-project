@@ -1,5 +1,10 @@
 import type { IIconRect } from "../types";
 
+export const enum TOOLS_BAR {
+  WIDTH = 75,
+  HEIGHT = 670,
+}
+
 export const ICON_RECT_LIST: IIconRect[] = [
   { x: 13.5, y: 18.5, w: 48, h: 48, n: "line" },
   { x: 13.5, y: 78.5, w: 48, h: 48, n: "rectangle" },
