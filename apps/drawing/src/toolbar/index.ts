@@ -1,7 +1,11 @@
 import { TOOLS_BAR, ICON_RECT_LIST, ICON_STYLE } from "./const";
 import { setIconShadow, setSelectedIconShadow, drawIcon } from "./icons";
 
-import { supportRetinaDisplay, isPointInRect } from "../common";
+import {
+  supportRetinaDisplay,
+  isPointInRect,
+  isPointInTriangle,
+} from "../common";
 
 import type { IIconRect } from "../types";
 
@@ -44,7 +48,12 @@ export function onToolsPress(
         rect.n === "slinky"
       ) {
         // @ts-ignore
-        window.doFill = isPointInButtonLowerRight(ctx, rect, x, y);
+        window.doFill = isPointInTriangle(
+          rect.x + rect.w, rect.y,
+          rect.x, rect.y + rect.h,
+          rect.x + rect.w, rect.y + rect.h,
+          x, y
+        );
       }
     }
   });

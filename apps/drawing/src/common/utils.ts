@@ -57,3 +57,24 @@ export function isPointInRect(
 
   return isXIn && isYIn;
 }
+
+export function getCross(
+  p0x: number, p0y: number,
+  p1x: number, p1y: number,
+  px: number, py: number,
+  ) {
+  return (p1x - p0x) * (py - p0y) - (p1y - p0y) * (px - p0x);
+}
+
+export function isPointInTriangle(
+  p0x: number, p0y: number,
+  p1x: number, p1y: number,
+  p2x: number, p2y: number,
+  px: number, py: number,
+) {
+  const a = getCross(p0x, p0y, p1x, p1y, px, py) < 0;
+  const b = getCross(p1x, p1y, p2x, p2y, px, py) < 0;
+  const c = getCross(p2x, p2y, p0x, p0y, px, py) < 0;
+
+  return a && b && c;
+}
