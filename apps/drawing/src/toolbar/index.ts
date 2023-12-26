@@ -1,7 +1,7 @@
 import { TOOLS_BAR, ICON_RECT_LIST, ICON_STYLE } from "./const";
 import { setIconShadow, setSelectedIconShadow, drawIcon } from "./icons";
 
-import { supportRetinaDisplay } from "../common";
+import { supportRetinaDisplay, isPointInRect } from "../common";
 
 import type { IIconRect } from "../types";
 
@@ -32,16 +32,16 @@ export function onToolsPress(
     ctx.beginPath();
     // isPointInPath 使用前，需要先用 ctx.rect 画一个区域出来
     ctx.rect(rect.x, rect.y, rect.w, rect.h);
-    if (ctx.isPointInPath(x, y)) {
+    if (isPointInRect(rect, { x, y })) {
       drawToolButtons(ele, rect);
       onButtonPressCb(rect);
 
       if (
         rect.n === "rectangle" ||
-        rect.n === 'circle' ||
-        rect.n === 'closedPath' ||
-        rect.n === 'text' ||
-        rect.n === 'slinky'
+        rect.n === "circle" ||
+        rect.n === "closedPath" ||
+        rect.n === "text" ||
+        rect.n === "slinky"
       ) {
         // @ts-ignore
         window.doFill = isPointInButtonLowerRight(ctx, rect, x, y);

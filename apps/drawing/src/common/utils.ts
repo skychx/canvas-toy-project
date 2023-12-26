@@ -46,3 +46,14 @@ export function drawGrid(
 
   ctx.restore();
 }
+
+// 只做纯数学计算，不做 ctx.rect，可以提升性能
+export function isPointInRect(
+  rect: { x: number; y: number; w: number; h: number },
+  point: { x: number; y: number }
+) {
+  const isXIn = point.x >= rect.x && point.x <= rect.x + rect.w;
+  const isYIn = point.y >= rect.y && point.y <= rect.y + rect.h;
+
+  return isXIn && isYIn;
+}

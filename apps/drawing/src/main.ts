@@ -29,8 +29,8 @@ toolsBarCanvas.addEventListener("mousedown", (e) => {
 
   onToolsPress(
     toolsBarCanvas,
-    e.offsetX * DPR,
-    e.offsetY * DPR,
+    e.offsetX,
+    e.offsetY,
     onToolButtonPress
   );
 });
