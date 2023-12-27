@@ -1,5 +1,7 @@
 import { DPR } from "./const";
 
+import type { IPoint, IRect, ITriangle } from "../types";
+
 export function supportRetinaDisplay(
   ele: HTMLCanvasElement,
   width: number,
@@ -48,33 +50,23 @@ export function drawGrid(
 }
 
 // 只做纯数学计算，不做 ctx.rect，可以提升性能
-export function isPointInRect(
-  rect: { x: number; y: number; w: number; h: number },
-  point: { x: number; y: number }
-) {
+export function isPointInRect(rect: IRect, point: IPoint) {
   const isXIn = point.x >= rect.x && point.x <= rect.x + rect.w;
   const isYIn = point.y >= rect.y && point.y <= rect.y + rect.h;
 
   return isXIn && isYIn;
 }
 
-export function getCross(
-  p0x: number, p0y: number,
-  p1x: number, p1y: number,
-  px: number, py: number,
-  ) {
-  return (p1x - p0x) * (py - p0y) - (p1y - p0y) * (px - p0x);
+// 这里的正负号表示和 p1 - p0, p - p0 这两个向量垂直的向量的方向
+export function getCross(p0: IPoint, p1: IPoint, p: IPoint) {
+  return (p1.x - p0.x) * (p.y - p0.y) - (p1.y - p0.y) * (p.x - p0.x);
 }
 
-export function isPointInTriangle(
-  p0x: number, p0y: number,
-  p1x: number, p1y: number,
-  p2x: number, p2y: number,
-  px: number, py: number,
-) {
-  const a = getCross(p0x, p0y, p1x, p1y, px, py) < 0;
-  const b = getCross(p1x, p1y, p2x, p2y, px, py) < 0;
-  const c = getCross(p2x, p2y, p0x, p0y, px, py) < 0;
+export function isPointInTriangle(t: ITriangle, p: IPoint) {
+  // 三个方向都相同且都小于 0，表示 p 在三角形内部
+  const a = getCross(t.p0, t.p1, p) < 0;
+  const b = getCross(t.p1, t.p2, p) < 0;
+  const c = getCross(t.p2, t.p0, p) < 0;
 
   return a && b && c;
 }

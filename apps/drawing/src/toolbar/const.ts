@@ -17,6 +17,14 @@ export const ICON_RECT_LIST: IIconRect[] = [
   { x: 13.5, y: 508.5, w: 48, h: 48, n: "eraser" },
 ];
 
+export const SUPPORT_FILL_TOOLS = [
+  "rectangle",
+  "circle",
+  "closedPath",
+  "text",
+  "slinky",
+];
+
 export const enum ICON_STYLE {
   RECT_BG_COLOR = "#eeeeee",
   RECT_BORDER_COLOR = "rgba(100, 140, 230, 0.5)",

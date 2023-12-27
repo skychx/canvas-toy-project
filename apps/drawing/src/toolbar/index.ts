@@ -1,4 +1,9 @@
-import { TOOLS_BAR, ICON_RECT_LIST, ICON_STYLE } from "./const";
+import {
+  TOOLS_BAR,
+  ICON_RECT_LIST,
+  SUPPORT_FILL_TOOLS,
+  ICON_STYLE,
+} from "./const";
 import { setIconShadow, setSelectedIconShadow, drawIcon } from "./icons";
 
 import {
@@ -40,19 +45,15 @@ export function onToolsPress(
       drawToolButtons(ele, rect);
       onButtonPressCb(rect);
 
-      if (
-        rect.n === "rectangle" ||
-        rect.n === "circle" ||
-        rect.n === "closedPath" ||
-        rect.n === "text" ||
-        rect.n === "slinky"
-      ) {
+      if (SUPPORT_FILL_TOOLS.includes(rect.n)) {
         // @ts-ignore
         window.doFill = isPointInTriangle(
-          rect.x + rect.w, rect.y,
-          rect.x, rect.y + rect.h,
-          rect.x + rect.w, rect.y + rect.h,
-          x, y
+          {
+            p0: { x: rect.x + rect.w, y: rect.y },
+            p1: { x: rect.x, y: rect.y + rect.h },
+            p2: { x: rect.x + rect.w, y: rect.y + rect.h },
+          },
+          { x, y }
         );
       }
     }
@@ -84,18 +85,4 @@ function drawToolButtons(
 
     drawIcon(ctx, rect);
   });
-}
-
-function isPointInButtonLowerRight(
-  ctx: CanvasRenderingContext2D,
-  rect: IIconRect,
-  x: number,
-  y: number
-) {
-  ctx.beginPath();
-  ctx.moveTo(rect.x + rect.w, rect.y);
-  ctx.lineTo(rect.x + rect.w, rect.y + rect.h);
-  ctx.lineTo(rect.x, rect.y + rect.h);
-
-  return ctx.isPointInPath(x, y);
 }
